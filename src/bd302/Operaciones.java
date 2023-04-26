@@ -6,6 +6,7 @@
 package bd302;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -19,8 +20,8 @@ public class Operaciones {
     private static String SQL_Insert3="insert into datos(identificacion, nombres, apellidos, correo) values (?,?,?,?)";
     private static String SQL_Delete="";
     private static String SQL_Update="";
-    private static String SQL_Select1="";
-    private static String SQL_Select2=" select * from datos where correo like '%?'";
+    private static String SQL_Select1="select * from datos where identificacion = ?";
+    private static String SQL_Select2="";
     private static String SQL_Select3="";
     private PreparedStatement  PS;   
     Conector cn;
@@ -49,5 +50,30 @@ public class Operaciones {
        
         return res;
     }
-    
+    public void consultaId(int id){
+        
+        ResultSet rs;
+        try{
+            PS=cn.getConexion().prepareStatement(SQL_Select1);
+            PS.setInt(1, id);
+            rs = PS.executeQuery();
+            if(rs!= null){
+                rs.next();
+                String nombre = rs.getString(2);
+                String apellido = rs.getString(3);
+                String correo = rs.getString(4);
+                System.out.println(nombre);
+                System.out.println(apellido);
+                System.out.println(correo);
+            }
+        }catch(SQLException e){
+            System.err.println("Error consultando "+e);
+        }finally{
+            PS= null;
+            cn.close();
+            System.out.println("Conexión cerrada");
+        }
+        
+        
+    }
 }
